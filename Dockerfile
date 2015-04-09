@@ -10,14 +10,17 @@ RUN     mozroots --import --sync
 
 # Copy source files
 ADD		src ./src
+WORKDIR	/src
 
 #Install development dependencies
 RUN		mono /src/NuGet.exe install Nancy
-RUN		mono /src/NuGet.exe install Nancy.Hosting.Self
 RUN		cp /src/Nancy.1.1/lib/net40/Nancy.dll /src
+
+RUN		mono /src/NuGet.exe install Nancy.Hosting.Self
 RUN		cp /src/Nancy.Hosting.Self.1.1/lib/net40/Nancy.Hosting.Self.dll /src
 
-WORKDIR	/src
+RUN		mono /src/NuGet.exe install LiteDB
+RUN		cp /src/LiteDB.1.0.0/lib/net40/LiteDB.dll /src
 
 # Compile command line app
 RUN     mcs /src/helloworld.cs
@@ -25,7 +28,7 @@ RUN     mcs /src/helloworld.cs
 CMD     ["mono", "/src/helloworld.exe"]
 
 # Compile web service
-RUN     mcs nancy.cs -reference:/src/Nancy.dll -reference:/src/Nancy.Hosting.Self.dll
+RUN     mcs nancy.cs -reference:/src/Nancy.dll -reference:/src/Nancy.Hosting.Self.dll -reference:/src/LiteDB.dll
 EXPOSE	8080
 
 # Run web service
