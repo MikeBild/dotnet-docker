@@ -22,13 +22,11 @@ RUN		cp /src/Nancy.Hosting.Self.1.1/lib/net40/Nancy.Hosting.Self.dll /src
 RUN		mono /src/NuGet.exe install LiteDB
 RUN		cp /src/LiteDB.1.0.0/lib/net40/LiteDB.dll /src
 
-# Compile command line app
-RUN     mcs /src/helloworld.cs
-# Run command line app
-CMD     ["mono", "/src/helloworld.exe"]
+RUN		mono /src/NuGet.exe install CronNET
+RUN		cp /src/CronNET.1.1.4939.24773/lib/net40/CronNET.dll /src
 
 # Compile web service
-RUN     mcs nancy.cs -reference:/src/Nancy.dll -reference:/src/Nancy.Hosting.Self.dll -reference:/src/LiteDB.dll
+RUN     mcs nancy.cs modules/webhooks.cs -reference:Nancy.dll -reference:Nancy.Hosting.Self.dll -reference:LiteDB.dll -reference:CronNET.dll
 EXPOSE	8080
 
 # Run web service
